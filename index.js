@@ -1,42 +1,50 @@
+const mongoose = require('mongoose');
+
+const Dishes = require('./models/dishes');
+const connectDB = require('./mongodb/Connection');
+const bodyParser = require('body-parser');
+
 const express = require('express');
-const http = require('http');
-const morgan = require('morgan');
+const dishRouter = require('./routes/dishRouter');
+const promotionsRouter =require('./routes/promoRouter');
 const hostname = 'localhost';
 const port = 3000;
 
-const bodyParser = require('body-parser');
 const app = express();
 
-const dishRouter = require('./routes/dishRouter');
-const promotionsRouter = require('./routes/promotions');
-const leadersRouter = require('./routes/leaders');
-
-app.use('/dishes', dishRouter);
-app.use('/promo', promotionsRouter);
-app.use('/leaders', leadersRouter);
-
-app.use(morgan('dev'));
-
-app.use(express.static(__dirname + '/public'));
-
 app.use(bodyParser.json());
+app.use('/dishes', dishRouter);
+app.use('./promotions', promotionsRouter);
 
-app.all('/dishes', (req,res,next) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  next();
-});
+function auth (req, res, next) {
+    console.log(req.headers);
+    var authHeader = req.headers.authorization;
+    if (!authHeader) {
+        var err = new Error('You are not authenticated!');
+        res.setHeader('WWW-Authenticate', 'Basic');
+        err.status = 401;
+        next(err);
+        return;
+    }
+  
+    var auth = new Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':');
+    var user = auth[0];
+    var pass = auth[1];
+    if (user == 'admin' && pass == 'password') {
+        next(); // authorized
+    } else {
+        var err = new Error('You are not authenticated!');
+        res.setHeader('WWW-Authenticate', 'Basic');      
+        err.status = 401;
+        next(err);
+    }
+  }
+  
+  app.use(auth);
 
-app.use((req, res, next) => {
-  console.log(req.headers);
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/html');
-  res.end('<html><body><h1>This is an Express Server</h1></body></html>');
+connectDB();
 
-});
+app.listen(port, () => {
+    console.log(`Example app listening at http://localhost:${port}`)
+  })
 
-const server = http.createServer(app);
-
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
