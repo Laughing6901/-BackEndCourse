@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const favoriteRouter = require('./routes/favoriteRouter');
 const Dishes = require('./models/dishes');
 const connectDB = require('./mongodb/Connection');
 const bodyParser = require('body-parser');
@@ -30,6 +30,7 @@ app.all('*', (req, res, next) => {
 app.use(cookieParser('12345-67890-09876-54321'));
 app.use(bodyParser.json());
 app.use('/dishes', dishRouter);
+app.use('/favorite', favoriteRouter);
 app.use('./promotions', promotionsRouter);
 app.use(passport.initialize());
 app.use(passport.session());
