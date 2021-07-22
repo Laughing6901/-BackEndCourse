@@ -21,7 +21,7 @@ promotionsRouter.route('/:promoId')
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.post(authenticate.verifyUser, (req, res, next) => {
+.post(authenticate.verifyAdmin, (req, res, next) => {
     promotions.findById(req.params.promoId)
     .then((promo) => {
         if (promo != null) {
@@ -41,12 +41,12 @@ promotionsRouter.route('/:promoId')
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.put(authenticate.verifyUser, (req, res, next) => {
+.put(authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end('PUT operation not supported on /promotions/'
         + req.params.promoId + '/comments');
 })
-.delete(authenticate.verifyUser, (req, res, next) => {
+.delete(authenticate.verifyAdmin, (req, res, next) => {
     promotions.findById(req.params.promoId)
     .then((promo) => {
         if (promo != null) {
@@ -86,7 +86,7 @@ promotionsRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.post(authenticate.verifyUser, (req, res, next) => {
+.post(authenticate.verifyAdmin, (req, res, next) => {
     promotions.find()
     .then((promo) => {
         if (promo != null) {
@@ -106,12 +106,12 @@ promotionsRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.put(authenticate.verifyUser, (req, res, next) => {
+.put(authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end('PUT operation not supported on /promotions/'
         + req.params);
 })
-.delete(authenticate.verifyUser, (req, res, next) => {
+.delete(authenticate.verifyAdmin, (req, res, next) => {
     promotions.find()
     .then((promo) => {
         if (promo != null) {

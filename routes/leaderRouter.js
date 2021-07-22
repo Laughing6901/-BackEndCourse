@@ -20,7 +20,7 @@ leadersRouter.route('/:leaderId')
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.post(authenticate.verifyUser, (req, res, next) => {
+.post(authenticate.verifyAdmin, (req, res, next) => {
     leaders.findById(req.params.leaderId)
     .then((leader) => {
         if (leader != null) {
@@ -40,12 +40,12 @@ leadersRouter.route('/:leaderId')
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.put(authenticate.verifyUser, (req, res, next) => {
+.put(authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end('PUT operation not supported on /leaders/'
         + req.params.leaderId + '/comments');
 })
-.delete(authenticate.verifyUser, (req, res, next) => {
+.delete(authenticate.verifyAdmin, (req, res, next) => {
     leaders.findById(req.params.leaderId)
     .then((leader) => {
         if (leader != null) {
@@ -85,7 +85,7 @@ leadersRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.post(authenticate.verifyUser, (req, res, next) => {
+.post(authenticate.verifyAdmin, (req, res, next) => {
     leaders.find()
     .then((leader) => {
         if (leader != null) {
@@ -105,12 +105,12 @@ leadersRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.put(authenticate.verifyUser, (req, res, next) => {
+.put(authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end('PUT operation not supported on /leaders/'
         + req.params);
 })
-.delete(authenticate.verifyUser, (req, res, next) => {
+.delete(authenticate.verifyAdmin, (req, res, next) => {
     leaders.findAll()
     .then((leader) => {
         if (leader != null) {

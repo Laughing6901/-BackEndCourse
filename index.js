@@ -15,9 +15,18 @@ var passport = require('passport');
 var authenticate = require('./authenticate');
 var config = require('./config');
 const url = config.mongoUrl;
+const uploadRouter = require('./routes/uploadRouter');
 
 const app = express();
-
+app.use('/imageUpload',uploadRouter);
+app.all('*', (req, res, next) => {
+    if (req.secure) {
+      return next();
+    }
+    else {
+      res.redirect(307, 'https://' + req.hostname + ':' + app.get('secPort') + req.url);
+    }
+  });
 app.use(cookieParser('12345-67890-09876-54321'));
 app.use(bodyParser.json());
 app.use('/dishes', dishRouter);
